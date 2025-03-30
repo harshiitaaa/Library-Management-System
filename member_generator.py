@@ -27,7 +27,7 @@ borrow_history = []
 for i in range(1, 3000):  # More than members to reflect multiple borrows
     borrow_id = i
     member_id = random.randint(1, 1250)
-    book_id = random.randint(1, 1500)
+    book_id = random.randint(1, 200)
     borrow_date = fake.date_between(start_date='-5y', end_date='today')
     return_date = borrow_date + timedelta(days=random.randint(7, 30)) if random.random() > 0.2 else None
     status = 'Returned' if return_date else 'Borrowed'
