@@ -43,9 +43,22 @@ def generate_books(num_books, num_authors):
     sql += ";"
     return sql
 
+# def generate_book_loans(num_loans, num_books, num_members):
+#     sql = "INSERT INTO book_loans (loan_id, book_id, member_id, loan_date, return_date, status) VALUES\n"
+#     loans = []
+#     for loan_id in range(1, num_loans + 1):
+#         book_id = random.randint(1, num_books)
+#         member_id = random.randint(1, num_members)
+#         loan_date = fake.date_between(start_date='-5y', end_date='today')
+#         return_date = loan_date + datetime.timedelta(days=random.randint(1, 30)) if random.random() < 0.8 else "NULL"
+#         return_date = f"'{return_date}'" if return_date != "NULL" else "NULL"
+#         status = "Returned" if return_date != "NULL" else "Borrowed"
+#         loans.append(f"({loan_id}, {book_id}, {member_id}, '{loan_date}', {return_date}, '{status}')")
+#     sql += ",\n".join(loans)
+#     sql += ";"
+#     return sql
 def generate_book_loans(num_loans, num_books, num_members):
-    sql = "INSERT INTO book_loans (loan_id, book_id, member_id, loan_date, return_date, status) VALUES\n"
-    loans = []
+    sql_statements = []  # List to store individual INSERT statements
     for loan_id in range(1, num_loans + 1):
         book_id = random.randint(1, num_books)
         member_id = random.randint(1, num_members)
@@ -53,16 +66,20 @@ def generate_book_loans(num_loans, num_books, num_members):
         return_date = loan_date + datetime.timedelta(days=random.randint(1, 30)) if random.random() < 0.8 else "NULL"
         return_date = f"'{return_date}'" if return_date != "NULL" else "NULL"
         status = "Returned" if return_date != "NULL" else "Borrowed"
-        loans.append(f"({loan_id}, {book_id}, {member_id}, '{loan_date}', {return_date}, '{status}')")
-    sql += ",\n".join(loans)
-    sql += ";"
-    return sql
+        
+        # Create an individual INSERT statement for each row
+        sql = f"INSERT INTO book_loans (loan_id, book_id, member_id, loan_date, return_date, status) VALUES ({loan_id}, {book_id}, {member_id}, '{loan_date}', {return_date}, '{status}');"
+        sql_statements.append(sql)
+    
+    # Join all INSERT statements into a single string with newlines
+    return "\n".join(sql_statements)
+
 
 # Generate the data
-num_authors = 5000
-num_books = 500000
+num_authors = 500
+num_books = 10000
 num_members = 500
-num_loans = 15000
+num_loans = 20000
 
 # Write to a file
 with open("books_data.sql", "w", encoding="utf-8") as file:
